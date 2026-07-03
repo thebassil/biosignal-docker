@@ -1,10 +1,10 @@
-FROM pytorch/pytorch:2.4.1-cuda12.4-cudnn9-devel
+FROM runpod/pytorch:2.4.1-py3.11-cuda12.4.1-devel-ubuntu22.04
 
-RUN apt-get update && apt-get install -y git ffmpeg && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y ffmpeg && rm -rf /var/lib/apt/lists/*
 
 RUN pip install --no-cache-dir \
     runpod huggingface_hub transformers accelerate safetensors \
-    torchaudio scipy scikit-learn numpy yt-dlp librosa nilearn uv
+    torchaudio scipy scikit-learn numpy yt-dlp librosa nilearn
 
 RUN cd /opt && git clone https://github.com/facebookresearch/tribev2.git && \
     cd tribev2 && pip install --no-cache-dir -e ".[plotting]"
