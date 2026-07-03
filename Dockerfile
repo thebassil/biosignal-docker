@@ -11,6 +11,6 @@ RUN cd /opt && git clone https://github.com/facebookresearch/tribev2.git && \
 
 RUN python3 -c "from huggingface_hub import snapshot_download; snapshot_download('facebook/tribev2', local_dir='/opt/tribev2_weights')"
 
-COPY handler_v2.py /opt/handler.py
+COPY handler.py /opt/handler.py
 
 CMD ["python3", "-u", "/opt/handler.py"]
