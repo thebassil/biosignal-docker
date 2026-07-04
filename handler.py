@@ -197,38 +197,30 @@ def handler(job):
         group = inp.get("group", "unknown")
         genre = inp.get("genre", "unknown")
 
+        model = load_model()
+
         # Check volume first
         if inp.get("audio_path") and os.path.exists(inp["audio_path"]):
             wav_path = inp["audio_path"]
             audio_source = "volume"
+            t0 = time.time()
+            df = model.get_events_dataframe(audio_path=wav_path)
+            preds, segs = model.predict(events=df)
+            dt = time.time() - t0
         else:
-            model = load_model()  # ensure loaded before download
             with tempfile.TemporaryDirectory() as tmpdir:
                 wav_path = download_audio(audio_url, tmpdir)
                 if wav_path is None:
                     return {"status": "error", "error": "download_failed", "song_name": song_name}
                 audio_source = "download"
-
-        model = load_model()
-        t0 = time.time()
-        df = model.get_events_dataframe(audio_path=wav_path)
-        preds, segs = model.predict(events=df)
-        dt = time.time() - t0
+                t0 = time.time()
+                df = model.get_events_dataframe(audio_path=wav_path)
+                preds, segs = model.predict(events=df)
+                dt = time.time() - t0
 
         features = extract_destrieux_features(preds)
         features["group"] = group
         features["genre"] = genre
-
-        # Persist to volume if available
-        try:
-            results_dir = "/runpod-volume/results"
-            if os.path.isdir("/runpod-volume"):
-                os.makedirs(results_dir, exist_ok=True)
-                with open(os.path.join(results_dir, f"{job.get('id','unknown')}.json"), "w") as f:
-                    json.dump({"status": "success", "song_name": song_name, "group": group,
-                               "genre": genre, "features": features, "predictions_shape": list(preds.shape),
-                               "inference_time": round(dt, 1)}, f)
-        except: pass
 
         return {"status": "success", "song_name": song_name, "group": group, "genre": genre,
                 "predictions_shape": list(preds.shape), "inference_time": round(dt, 1),
