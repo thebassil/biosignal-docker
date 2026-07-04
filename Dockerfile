@@ -4,7 +4,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends git ffmpeg && r
 
 RUN pip install --no-cache-dir \
     runpod huggingface_hub transformers accelerate safetensors \
-    torchaudio scipy scikit-learn numpy yt-dlp librosa nilearn
+    torchaudio scipy scikit-learn numpy yt-dlp librosa nilearn uv
 
 RUN cd /opt && git clone --depth 1 https://github.com/facebookresearch/tribev2.git && \
     cd tribev2 && pip install --no-cache-dir -e .
