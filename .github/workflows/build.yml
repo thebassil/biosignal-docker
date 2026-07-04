@@ -7,10 +7,14 @@ jobs:
       contents: read
       packages: write
     steps:
-      - name: Free disk space
+      - name: Maximize disk space
         run: |
-          sudo rm -rf /usr/local/lib/android /usr/share/dotnet /opt/ghc /usr/local/share/boost
+          sudo rm -rf /usr/local/lib/android /usr/share/dotnet /opt/ghc \
+            /usr/local/share/boost /usr/local/.ghcup /usr/local/graalvm \
+            /usr/local/lib/node_modules /opt/hostedtoolcache/CodeQL \
+            /usr/share/swift /usr/local/share/chromium /usr/share/miniconda
           sudo docker image prune -af
+          sudo apt-get clean
           df -h /
       - uses: actions/checkout@v4
       - uses: docker/login-action@v3
