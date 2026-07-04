@@ -28,3 +28,5 @@ jobs:
           push: true
           tags: ghcr.io/thebassil/biosignal-docker:latest
           platforms: linux/amd64
+          build-args: |
+            HF_TOKEN=${{ secrets.HF_TOKEN }}
